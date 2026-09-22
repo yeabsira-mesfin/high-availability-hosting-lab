@@ -1,7 +1,10 @@
 from flask import Flask, jsonify
+from prometheus_flask_exporter import PrometheusMetrics
 import os, socket, time
 
 app = Flask(__name__)
+metrics = PrometheusMetrics(app)
+metrics.info('app_info', 'High-availability lab application', version='1.0.0')
 START = time.time()
 
 @app.get('/health')
@@ -11,7 +14,7 @@ def health():
 @app.get('/')
 def index():
     return jsonify(
-        service='Epic-style high-availability hosting lab',
+        service='high-availability hosting lab',
         instance=socket.gethostname(),
         environment=os.getenv('APP_ENV', 'development'),
         uptime_seconds=round(time.time() - START, 2)
